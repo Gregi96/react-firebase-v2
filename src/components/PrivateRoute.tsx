@@ -13,7 +13,10 @@ export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({
 
     if (!user) {
         return (
-            <Link to='/login' replace={true} />
+            <Navigate
+                to='/login'
+                replace
+            />
         )
     }
 
