@@ -1,42 +1,47 @@
 import React from 'react'
+import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components'
+import { Provider } from 'outstated'
 import { theme } from 'lib/styles'
-import { Route, Routes } from 'react-router-dom'
-import { Home, Login, Navigation, Register} from 'components'
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from 'context/AuthContext'
-import { PrivateRoute } from 'components/PrivateRoute'
+import { Home, Login, Navigation, Register, PrivateRoute } from 'components'
+import { useAuthStore as authStore } from 'lib/stores'
 
 export const App = () => (
     <ThemeProvider theme={theme}>
-        <AuthProvider>
+        <Provider stores={[authStore]}>
             <AppContainer>
-                    <BrowserRouter>
-                        <Navigation />
-                        <Routes>
-                            <Route
-                               path='/'
-                               element={(
-                                   <PrivateRoute>
-                                       <Home />
-                                   </PrivateRoute>)}
-                            />
-                            <Route
-                                path="/login"
-                                element={<Login />}
-                            />
-                            <Route
-                                path='/register'
-                                element={<Register />}
-                            />
-                        </Routes>
-                    </BrowserRouter>
+                <BrowserRouter>
+                    <Navigation />
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={(
+                                <PrivateRoute>
+                                    <Home/>
+                                </PrivateRoute>)}
+                        />
+                        <Route
+                            path="/login"
+                            element={(
+                                <Login/>
+                            )}
+                        />
+                        <Route
+                            path="/register"
+                            element={(
+                                <Register/>
+                            )}
+                        />
+                    </Routes>
+                </BrowserRouter>
             </AppContainer>
-        </AuthProvider>
+        </Provider>
     </ThemeProvider>
 )
 
 const AppContainer = styled.div`
     width: 100%;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
 `

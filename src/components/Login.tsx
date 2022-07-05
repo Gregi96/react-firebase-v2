@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { auth, db } from '../firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc } from "firebase/firestore";
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, updateDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase'
 
 type LoginFields = {
     email: string,
@@ -22,13 +22,24 @@ export const Login = () => {
     })
     const { email, error, loading, password } = data
     const logIn = () => {
-        setData({...data, error: '', loading: true})
+
+        setData({
+            ...data,
+            error: '',
+            loading: true
+        })
+
         if (!email || !password) {
-            return setData({...data, error: 'All fields are required'})
+            return setData({
+                ...data,
+                error: 'All fields are required'
+            })
         }
+
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
+            .then(userCredential => {
+                const user = userCredential.user
+
                 updateDoc(doc(db, 'users', user.uid), {
                     isOnline: true
                 }).then(() => {
@@ -41,44 +52,56 @@ export const Login = () => {
                     navigation('/')
                 })
             })
-            .catch((error) => {
-                const errorMessage = error.message;
-                setData({...data, error: errorMessage})
-            });
+            .catch(error => {
+                const errorMessage = error.message
+
+                setData({
+                    ...data,
+                    error: errorMessage
+                })
+            })
     }
 
     return (
         <FormContainer>
-            <h3>Create An Account</h3>
+            <h3>
+                Create An Account
+            </h3>
             <FieldContainer>
-                <p>E-mail</p>
+                <p>
+                    E-mail
+                </p>
                 <input
                     value={email}
                     placeholder="enter name"
-                    type='email'
-                    onChange={(event) => setData((prev) => ({
+                    type="email"
+                    onChange={event => setData(prev => ({
                         ...prev,
                         email: event.target.value
                     }))}
                 />
             </FieldContainer>
             <FieldContainer>
-                <p>Password</p>
+                <p>
+                    Password
+                </p>
                 <input
                     value={password}
                     placeholder="enter password"
-                    type='password'
-                    onChange={(event) => setData((prev) => ({
+                    type="password"
+                    onChange={event => setData(prev => ({
                         ...prev,
                         password: event.target.value
                     }))}
                 />
             </FieldContainer>
             {error.length > 0 && (
-                <ErrorMessage>{error}</ErrorMessage>
+                <ErrorMessage>
+                    {error}
+                </ErrorMessage>
             )}
             <button
-                onClick={() => logIn()}
+                onClick={logIn}
                 disabled={data.loading}
             >
                 {loading ? 'Logging ...' : 'Log in'}
@@ -99,10 +122,9 @@ const FieldContainer = styled.label`
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
-  
     p {
       margin-bottom: 5px;
-    } 
+    }
 `
 
 const ErrorMessage = styled.p`

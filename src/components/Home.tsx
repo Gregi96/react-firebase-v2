@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { User } from './User'
 import { useAllRegisteredUsers } from 'lib/hooks'
+import { User } from './User'
 
 export const Home = () => {
     const { users } = useAllRegisteredUsers()
@@ -9,11 +9,19 @@ export const Home = () => {
     return (
         <HomeContainer>
             <UserAccountContainer>
-                {users && users.map((user) => (
-                    <User key={user.uid} {...user} />
+                {users && users.map(user => (
+                    <User
+                        key={user.uid}
+                        {...user}
+                    />
                 ))}
             </UserAccountContainer>
-            <MessagesContainer>Messages</MessagesContainer>
+            <MessagesContainer>
+                <MessageList>
+                    Messages will be here
+                </MessageList>
+                <input placeholder="Type message"/>
+            </MessagesContainer>
         </HomeContainer>
     )
 }
@@ -31,4 +39,8 @@ const UserAccountContainer = styled.div`
 
 const MessagesContainer = styled.div`
     flex: 1;
+`
+
+const MessageList = styled.div`
+
 `

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import {setDoc, doc, Timestamp} from 'firebase/firestore'
-import { db, auth } from '../firebase'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { setDoc, doc, Timestamp } from 'firebase/firestore'
+import { useNavigate } from 'react-router-dom'
 import { UserModel } from 'lib/types'
+import { db, auth } from '../firebase'
 
-export const Register = () => {
+export const Register: React.FunctionComponent = () => {
     const navigation = useNavigate()
     const [data, setData] = useState<UserModel>({
         name: '',
@@ -23,15 +23,18 @@ export const Register = () => {
             error: '',
             loading: true
         })
+
         if (!name  || !email || !password) {
             return setData({
                 ...data,
                 error: 'All fields are required'
             })
         }
+
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
+            .then(userCredential => {
+                const user = userCredential.user
+
                 setDoc(doc(db, 'users', user.uid), {
                     uid: user.uid,
                     name,
@@ -49,57 +52,65 @@ export const Register = () => {
                     navigation('/')
                 })
             })
-            .catch((error) => {
+            .catch(error =>
                 setData({
                     ...data,
                     error: error.message
                 })
-            });
+            )
     }
 
     return (
         <FormContainer>
-            <h3>Log into your Account</h3>
+            <h3>
+                Log into your Account
+            </h3>
             <FieldContainer>
                 <p>Name</p>
                 <input
                     value={name}
                     placeholder="enter name"
-                    onChange={(event) => setData((prev) => ({
+                    onChange={event => setData(prev => ({
                         ...prev,
                         name: event.target.value
                     }))}
                 />
             </FieldContainer>
             <FieldContainer>
-                <p>E-mail</p>
+                <p>
+                    E-mail
+                </p>
                 <input
                     value={email}
                     placeholder="enter name"
-                    type='email'
-                    onChange={(event) => setData((prev) => ({
+                    type="email"
+                    onChange={event => setData(prev => ({
                         ...prev,
                         email: event.target.value
                     }))}
                 />
             </FieldContainer>
             <FieldContainer>
-                <p>Password</p>
+                <p>
+                    Password
+                </p>
                 <input
                     value={password}
                     placeholder="enter password"
-                    type='password'
-                    onChange={(event) => setData((prev) => ({
+                    type="password"
+                    onChange={event => setData(prev => ({
                         ...prev,
                         password: event.target.value
                     }))}
                 />
             </FieldContainer>
             {error.length > 0 && (
-                <ErrorMessage>{error}</ErrorMessage>
+                <ErrorMessage>
+                    {error}
+                </ErrorMessage>
             )}
             <button
-                onClick={() => register()}
+                onClick={register}
                 disabled={data.loading}
             >
                 {loading ? 'Registering ...' : 'Register'}
@@ -120,10 +131,9 @@ const FieldContainer = styled.label`
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
-  
     p {
       margin-bottom: 5px;
-    } 
+    }
 `
 
 const ErrorMessage = styled.p`

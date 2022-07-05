@@ -1,35 +1,34 @@
 import React from 'react'
+import styled from 'styled-components'
 import { UserResponseModel } from 'lib/types'
 import { Avatar } from 'assets/Avatar'
-import styled from 'styled-components'
 
 type UserStatusProps = {
     isActive: boolean
 }
 
 export const User: React.FunctionComponent<UserResponseModel> = ({
-        email,
-        isOnline,
-        name,
-        uid
-    }) => {
-
-    return (
-        <UserCard>
-            <AvatarContainer>
-                <Avatar />
-                <UserStatus isActive={isOnline}/>
-            </AvatarContainer>
-            <div>{name}</div>
-        </UserCard>
-    )
-}
+    email,
+    isOnline,
+    name,
+    uid
+}) => (
+    <UserCard>
+        <AvatarContainer>
+            <Avatar />
+            <UserStatus isActive={isOnline}/>
+        </AvatarContainer>
+        <div>
+            {name}
+        </div>
+    </UserCard>
+)
 
 const UserCard = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 30px;
-    background-color: aliceblue;
+    background-color: ${({ theme }) => theme.colors.lightBlue};
     padding: 20px;
     justify-content: space-between;
     cursor: pointer;
@@ -54,7 +53,7 @@ const UserStatus = styled.div<UserStatusProps>`
     position: absolute;
     bottom: 0;
     right: 0;
-    background-color: ${({isActive}) => isActive ? 'green' : 'red'};
+    background-color: ${({ isActive, theme }) => isActive ? theme.colors.green : theme.colors.red};
     border-radius: 50%;
 `
 
