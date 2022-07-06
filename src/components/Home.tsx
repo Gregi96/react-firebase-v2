@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useAllRegisteredUsers } from 'lib/hooks'
-import { MessageResponse, UserResponseModel } from 'lib/types'
 import {
     collection,
     addDoc,
@@ -9,17 +7,21 @@ import {
     query,
     onSnapshot,
     orderBy
+
 } from 'firebase/firestore'
+import { getUnixTime } from 'date-fns'
+import { useAllRegisteredUsers } from 'lib/hooks'
+import { MessageResponse, UserResponseModel } from 'lib/types'
 import { db, auth } from 'firebase'
 import { User } from './User'
 import { Message } from './Message'
 import { InputText } from './InputText'
 
-export const Home = () => {
+export const Home: React.FunctionComponent = () => {
     const { users } = useAllRegisteredUsers()
     const [selectedUser, setSelectedUser] = useState<UserResponseModel>()
     const [messageText, setMessageText] = useState('')
-    const [messages, setMessages] = useState<Array<MessageResponse>>()
+    const [messages, setMessages] = useState<Array<MessageResponse>>([])
 
     const sendMessage = () => {
         if (messageText && auth.currentUser?.uid && selectedUser?.uid) {
@@ -33,7 +35,8 @@ export const Home = () => {
                 to: selectedUser.uid,
                 createdAt: Timestamp.fromDate(new Date()),
                 message: messageText
-            }).then(() => setMessageText(''))
+            })
+                .then(() => setMessageText(''))
         }
     }
 
@@ -49,12 +52,12 @@ export const Home = () => {
             const q = query(messageRef, orderBy('createdAt', 'asc'))
 
             onSnapshot(q, snapshot => {
-                const messages: Array<MessageResponse> = []
-
+                setMessages([])
                 snapshot.forEach(doc => {
-                    messages.push(doc.data() as MessageResponse)
+                    setMessages(prev =>
+                        [...prev, doc.data()] as Array<MessageResponse>
+                    )
                 })
-                setMessages(messages)
             })
         }
     }
@@ -84,12 +87,17 @@ export const Home = () => {
                         )}
                     </Heading>
                     <MessagesList>
-                        {messages && messages.map((message, index) => (
-                            <Message
-                                key={index}
-                                message={message}
-                            />
-                        ))}
+                        {messages && messages.map((message, index) => {
+                            const date = message.createdAt.toDate()
+                            const uniqId = `${getUnixTime(date)}-index`
+
+                            return (
+                                <Message
+                                    key={uniqId}
+                                    message={message}
+                                />
+                            )
+                        })}
                     </MessagesList>
                 </div>
                 {selectedUser && (

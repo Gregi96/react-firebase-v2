@@ -28,6 +28,8 @@ export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ child
     }
 
     return (
-        <div>Is loading</div>
+        <div>
+            Is loading
+        </div>
     )
 }

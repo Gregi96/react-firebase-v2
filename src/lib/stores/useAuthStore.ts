@@ -31,10 +31,15 @@ export const useAuthStore = (): useAuthStoreResponse => {
                         isOnline: false
                     }).then(() => setUser(null))
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
             // An error happened.
             })
     }
 
-    return { user, logOut, isLoading }
+    return {
+        user,
+        logOut,
+        isLoading
+    }
 }

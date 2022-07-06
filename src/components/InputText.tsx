@@ -3,8 +3,8 @@ import styled from 'styled-components'
 
 type InputTextProps = {
     value: string,
-    onChange(text: string): void,
-    onClick(): void
+    onClick: VoidFunction,
+    onChange(text: string): void
 }
 
 export const InputText: React.FunctionComponent<InputTextProps> = ({

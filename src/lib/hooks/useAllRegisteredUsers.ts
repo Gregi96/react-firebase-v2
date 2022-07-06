@@ -4,7 +4,7 @@ import { auth, db } from 'firebase'
 import { UserResponseModel } from 'lib/types'
 
 export const useAllRegisteredUsers = () => {
-    const [users, setUsers] = useState<Array<UserResponseModel>>()
+    const [users, setUsers] = useState<Array<UserResponseModel>>([])
 
     useEffect(() => {
         if (!auth.currentUser?.uid) {
@@ -14,12 +14,12 @@ export const useAllRegisteredUsers = () => {
         const q = query(collection(db, 'users'), where('uid', 'not-in', [auth.currentUser.uid]))
 
         const unsubscribe = onSnapshot(q, querySnapshot => {
-            const users: Array<UserResponseModel> = []
-
+            setUsers([])
             querySnapshot.forEach(doc => {
-                users.push(doc.data() as UserResponseModel)
+                setUsers(prev =>
+                    [...prev, doc.data()] as Array<UserResponseModel>
+                )
             })
-            setUsers(users)
         })
 
         return unsubscribe

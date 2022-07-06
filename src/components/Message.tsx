@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import { format } from 'date-fns'
 import styled from 'styled-components'
 import { MessageResponse } from 'lib/types'
 import { auth } from 'firebase'
@@ -16,7 +16,7 @@ export const Message: React.FunctionComponent<MessageProps> = ({
     message
 }) => {
     const dateToFormat = message.createdAt.toDate()
-    const formattedDate = moment(dateToFormat).format('YYYY/MM/DD hh:mm:ss')
+    const formattedDate = format(dateToFormat, 'yyyy/MM/dd/ hh:mm:ss')
 
     return (
         <MessageContainer left={auth.currentUser!.uid === message.from}>
