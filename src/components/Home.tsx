@@ -51,12 +51,9 @@ export const Home: React.FunctionComponent = () => {
             const q = query(messageRef, orderBy('createdAt', 'asc'))
 
             onSnapshot(q, snapshot => {
-                setMessages([])
-                snapshot.forEach(doc => {
-                    setMessages(prev =>
-                        [...prev, doc.data()] as Array<MessageResponse>
-                    )
-                })
+                const messages = snapshot.docs.map(doc => doc.data()) as Array<MessageResponse>
+
+                setMessages(messages)
             })
         }
     }

@@ -14,12 +14,9 @@ export const useAllRegisteredUsers = () => {
         const q = query(collection(db, 'users'), where('uid', 'not-in', [auth.currentUser.uid]))
 
         const unsubscribe = onSnapshot(q, querySnapshot => {
-            setUsers([])
-            querySnapshot.forEach(doc => {
-                setUsers(prev =>
-                    [...prev, doc.data()] as Array<UserResponseModel>
-                )
-            })
+            const users = querySnapshot.docs.map(doc => doc.data()) as Array<UserResponseModel>
+
+            setUsers(users)
         })
 
         return unsubscribe
