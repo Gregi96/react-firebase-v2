@@ -4,21 +4,27 @@ import styled from 'styled-components'
 type InputTextProps = {
     value: string,
     onClick: VoidFunction,
+    isLoading: boolean,
     onChange(text: string): void
 }
 
 export const InputText: React.FunctionComponent<InputTextProps> = ({
     value,
     onChange,
-    onClick
+    onClick,
+    isLoading
 }) => (
     <InputContainer>
         <Input
+            disabled={isLoading}
             placeholder="type message"
             value={value}
             onChange={event => onChange(event.target.value)}
         />
-        <button onClick={onClick}>
+        <button
+            disabled={isLoading}
+            onClick={onClick}
+        >
             Send
         </button>
     </InputContainer>

@@ -1,29 +1,22 @@
-import React, { Fragment, useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useStore } from 'outstated'
 import { useAuthStore as authStore } from 'lib/stores'
+import { useAuth } from 'lib/hooks'
 
 export const Navigation = () => {
-    const { user,  logOut, isLoading } = useStore(authStore)
-    const navigation = useNavigate()
-
-    const signOutFunction = () => logOut()
-        .then(() => navigation('/login'))
-
-    if (isLoading) {
-        return (
-            <div>
-                Loading...
-            </div>
-        )
-    }
+    const { user } = useStore(authStore)
+    const { logOut, isLoading } = useAuth()
 
     return (
         <NavigationContainer>
             {user ? (
-                <button onClick={signOutFunction}>
-                    Log out
+                <button
+                    onClick={() => logOut()}
+                    disabled={isLoading}
+                >
+                    {isLoading ? 'Is loging out' : 'log out'}
                 </button>
             ) : (
                 <Fragment>

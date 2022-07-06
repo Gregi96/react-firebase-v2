@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { UserResponseModel } from 'lib/types'
-import { Avatar } from 'assets/Avatar'
+import { Icons } from 'assets'
 
 type UserStatusProps = {
     isActive: boolean
@@ -21,7 +21,7 @@ export const User: React.FunctionComponent<UserProps> = ({
     return (
         <UserCard onClick={() => onClick(user)}>
             <AvatarContainer>
-                <Avatar/>
+                <Icons.Avatar/>
                 <UserStatus isActive={isOnline}/>
             </AvatarContainer>
             <div>

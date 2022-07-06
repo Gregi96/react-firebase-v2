@@ -9,7 +9,7 @@ type MessageProps = {
 }
 
 type MessageContainerProps = {
-    left: boolean
+    sender: boolean
 }
 
 export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
@@ -17,7 +17,7 @@ export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
     const formattedDate = format(dateToFormat, 'yyyy/MM/dd/ hh:mm:ss')
 
     return (
-        <MessageContainer left={auth.currentUser!.uid === message.from}>
+        <MessageContainer sender={auth.currentUser!.uid === message.from}>
             <div>
                 {message.message}
             </div>
@@ -30,11 +30,11 @@ export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
 
 const MessageContainer = styled.div<MessageContainerProps>`
     padding: 10px;
-    background-color: ${({ theme, left }) => left ? theme.colors.beige : theme.colors.lightBlue};
+    background-color: ${({ theme, sender }) => sender ? theme.colors.beige : theme.colors.lightBlue};
     margin-bottom: 10px;
     width: fit-content;
     max-width: 300px;
-    align-self: ${({ left }) => left ? 'end' : 'start'};
+    align-self: ${({ sender }) => sender ? 'end' : 'start'};
     border-radius: 15px;
     text-align: center;
 `

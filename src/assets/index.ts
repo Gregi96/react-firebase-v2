@@ -1,1 +1,5 @@
-export { Avatar } from './Avatar'
+import * as Icons from './icons'
+
+export {
+    Icons
+}

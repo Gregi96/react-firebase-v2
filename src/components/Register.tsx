@@ -1,63 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { setDoc, doc, Timestamp } from 'firebase/firestore'
-import { useNavigate } from 'react-router-dom'
-import { UserModel } from 'lib/types'
-import { db, auth } from '../firebase'
+import { useAuth } from 'lib/hooks'
 
 export const Register: React.FunctionComponent = () => {
-    const navigation = useNavigate()
-    const [data, setData] = useState<UserModel>({
-        name: '',
-        email: '',
-        password: '',
-        error: '',
-        loading: false
-    })
-    const { name, email, error, loading, password } = data
-
-    const register = () => {
-        setData(prev => ({
-            ...prev,
-            error: '',
-            loading: true
-        }))
-
-        if (!name  || !email || !password) {
-            return setData(prev => ({
-                ...prev,
-                error: 'All fields are required'
-            }))
-        }
-
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(userCredential => {
-                const user = userCredential.user
-
-                setDoc(doc(db, 'users', user.uid), {
-                    uid: user.uid,
-                    name,
-                    email,
-                    creatAt: Timestamp.fromDate(new Date()),
-                    isOnline: true
-                }).then(() => {
-                    setData(prev => ({
-                        ...prev,
-                        name: '',
-                        email: '',
-                        password: '',
-                        error: '',
-                        loading: false
-                    }))
-                    navigation('/')
-                })
-            })
-            .catch(error => setData({
-                ...data,
-                error: error.message
-            }))
-    }
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [name, setName] = useState('')
+    const { signUp, isLoading, hasError } = useAuth()
 
     return (
         <FormContainer>
@@ -71,10 +20,7 @@ export const Register: React.FunctionComponent = () => {
                 <input
                     value={name}
                     placeholder="enter name"
-                    onChange={event => setData(prev => ({
-                        ...prev,
-                        name: event.target.value
-                    }))}
+                    onChange={event => setName(event.target.value)}
                 />
             </FieldContainer>
             <FieldContainer>
@@ -85,10 +31,7 @@ export const Register: React.FunctionComponent = () => {
                     value={email}
                     placeholder="enter name"
                     type="email"
-                    onChange={event => setData(prev => ({
-                        ...prev,
-                        email: event.target.value
-                    }))}
+                    onChange={event => setEmail(event.target.value)}
                 />
             </FieldContainer>
             <FieldContainer>
@@ -99,22 +42,23 @@ export const Register: React.FunctionComponent = () => {
                     value={password}
                     placeholder="enter password"
                     type="password"
-                    onChange={event => setData(prev => ({
-                        ...prev,
-                        password: event.target.value
-                    }))}
+                    onChange={event => setPassword(event.target.value)}
                 />
             </FieldContainer>
-            {error.length > 0 && (
+            {hasError  && (
                 <ErrorMessage>
-                    {error}
+                    Ups cos poszlo nie tak
                 </ErrorMessage>
             )}
             <button
-                onClick={register}
-                disabled={data.loading}
+                onClick={() => signUp({
+                    name,
+                    email,
+                    password
+                })}
+                disabled={isLoading}
             >
-                {loading ? 'Registering ...' : 'Register'}
+                {isLoading ? 'Registering ...' : 'Register'}
             </button>
         </FormContainer>
     )

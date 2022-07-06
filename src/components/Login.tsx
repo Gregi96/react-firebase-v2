@@ -1,66 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, updateDoc } from 'firebase/firestore'
-import { auth, db } from 'firebase'
-
-type LoginFields = {
-    email: string,
-    password: string,
-    error: string,
-    loading: boolean
-}
+import { useAuth } from 'lib/hooks'
 
 export const Login: React.FunctionComponent = () => {
-    const navigation = useNavigate()
-    const [data, setData] = useState<LoginFields>({
-        email: '',
-        password: '',
-        error: '',
-        loading: false
-    })
-    const { email, error, loading, password } = data
-    const logIn = () => {
-        setData(prev => ({
-            ...prev,
-            error: '',
-            loading: true
-        }))
-
-        if (!email || !password) {
-            return setData(prev => ({
-                ...prev,
-                error: 'All fields are required'
-            }))
-        }
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then(userCredential => {
-                const user = userCredential.user
-
-                updateDoc(doc(db, 'users', user.uid), {
-                    isOnline: true
-                }).then(() => {
-                    setData(prev => ({
-                        ...prev,
-                        email: '',
-                        error: '',
-                        password: '',
-                        loading: false
-                    }))
-                    navigation('/')
-                })
-            })
-            .catch(error => {
-                const errorMessage = error.message
-
-                setData(prev => ({
-                    ...prev,
-                    error: errorMessage
-                }))
-            })
-    }
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const { hasError, logIn, isLoading } = useAuth()
 
     return (
         <FormContainer>
@@ -75,10 +20,7 @@ export const Login: React.FunctionComponent = () => {
                     value={email}
                     placeholder="enter name"
                     type="email"
-                    onChange={event => setData(prev => ({
-                        ...prev,
-                        email: event.target.value
-                    }))}
+                    onChange={event => setEmail(event.target.value)}
                 />
             </FieldContainer>
             <FieldContainer>
@@ -89,22 +31,22 @@ export const Login: React.FunctionComponent = () => {
                     value={password}
                     placeholder="enter password"
                     type="password"
-                    onChange={event => setData(prev => ({
-                        ...prev,
-                        password: event.target.value
-                    }))}
+                    onChange={event => setPassword(event.target.value)}
                 />
             </FieldContainer>
-            {error.length > 0 && (
+            {hasError && (
                 <ErrorMessage>
-                    {error}
+                    Ups cos poszlo nie tak
                 </ErrorMessage>
             )}
             <button
-                onClick={logIn}
-                disabled={data.loading}
+                onClick={() => logIn({
+                    email,
+                    password
+                })}
+                disabled={isLoading}
             >
-                {loading ? 'Logging ...' : 'Log in'}
+                {isLoading ? 'Logging ...' : 'Log in'}
             </button>
         </FormContainer>
     )

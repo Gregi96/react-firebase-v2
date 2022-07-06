@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { auth, db } from 'firebase'
-import { UserResponseModel } from 'lib/types'
+import { UserResponseModel, FirebaseCollectionEnum } from 'lib/types'
 
 export const useAllRegisteredUsers = () => {
     const [users, setUsers] = useState<Array<UserResponseModel>>([])
@@ -11,9 +11,9 @@ export const useAllRegisteredUsers = () => {
             return
         }
 
-        const q = query(collection(db, 'users'), where('uid', 'not-in', [auth.currentUser.uid]))
+        const queryUsers = query(collection(db, FirebaseCollectionEnum.User), where('uid', 'not-in', [auth.currentUser.uid]))
 
-        const unsubscribe = onSnapshot(q, querySnapshot => {
+        const unsubscribe = onSnapshot(queryUsers, querySnapshot => {
             const users = querySnapshot.docs.map(doc => doc.data()) as Array<UserResponseModel>
 
             setUsers(users)

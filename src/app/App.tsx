@@ -1,44 +1,30 @@
-import React from 'react'
-import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import React, { useEffect } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
-import { Provider } from 'outstated'
+import { useStore } from 'outstated'
+import { auth } from 'firebase'
 import { theme } from 'lib/styles'
 import { useAuthStore as authStore } from 'lib/stores'
-import { Home, Login, Navigation, Register, PrivateRoute } from 'components'
+import { renderRoutes } from 'lib/routing'
+import { onAuthStateChanged } from 'firebase/auth'
 
-export const App = () => (
-    <ThemeProvider theme={theme}>
-        <Provider stores={[authStore]}>
+export const App = () => {
+    const { setUser, setIsLoading } = useStore(authStore)
+
+    useEffect(() => {
+        onAuthStateChanged(auth, user => {
+            setUser(user)
+            setIsLoading(false)
+        })
+    }, [])
+
+    return (
+        <ThemeProvider theme={theme}>
             <AppContainer>
-                <BrowserRouter>
-                    <Navigation/>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={(
-                                <PrivateRoute>
-                                    <Home/>
-                                </PrivateRoute>
-                            )}
-                        />
-                        <Route
-                            path="/login"
-                            element={(
-                                <Login/>
-                            )}
-                        />
-                        <Route
-                            path="/register"
-                            element={(
-                                <Register/>
-                            )}
-                        />
-                    </Routes>
-                </BrowserRouter>
+                {renderRoutes()}
             </AppContainer>
-        </Provider>
-    </ThemeProvider>
-)
+        </ThemeProvider>
+    )
+}
 
 const AppContainer = styled.div`
     width: 100%;
