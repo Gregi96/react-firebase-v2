@@ -7,22 +7,29 @@ type UserStatusProps = {
     isActive: boolean
 }
 
-export const User: React.FunctionComponent<UserResponseModel> = ({
-    email,
-    isOnline,
-    name,
-    uid
-}) => (
-    <UserCard>
-        <AvatarContainer>
-            <Avatar />
-            <UserStatus isActive={isOnline}/>
-        </AvatarContainer>
-        <div>
-            {name}
-        </div>
-    </UserCard>
-)
+type UserProps = {
+    user: UserResponseModel,
+    onClick(user: UserResponseModel): void
+}
+
+export const User: React.FunctionComponent<UserProps> = ({
+    user,
+    onClick
+}) => {
+    const { isOnline, name } = user
+
+    return (
+        <UserCard onClick={() => onClick(user)}>
+            <AvatarContainer>
+                <Avatar/>
+                <UserStatus isActive={isOnline}/>
+            </AvatarContainer>
+            <div>
+                {name}
+            </div>
+        </UserCard>
+    )
+}
 
 const UserCard = styled.div`
     display: flex;
@@ -32,6 +39,7 @@ const UserCard = styled.div`
     padding: 20px;
     justify-content: space-between;
     cursor: pointer;
+    border-radius: 3px;
     &:hover {
       filter: brightness(95%);
     }

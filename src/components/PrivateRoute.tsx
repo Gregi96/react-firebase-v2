@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useStore } from 'outstated'
-import { useAuthStore as authStore } from '../lib/stores'
+import { useAuthStore as authStore } from 'lib/stores'
 
 type PrivateRouteProps = {
     children?: React.ReactChild
 }
 
 export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ children }) => {
-    const { user } = useStore(authStore)
+    const { user, isLoading } = useStore(authStore)
 
-    if (!user) {
+    if (!isLoading && !user) {
         return (
             <Navigate
                 to="/login"
@@ -19,9 +19,15 @@ export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ child
         )
     }
 
+    if (!isLoading && user) {
+        return (
+            <Fragment>
+                {children}
+            </Fragment>
+        )
+    }
+
     return (
-        <Fragment>
-            {children}
-        </Fragment>
+        <div>Is loading</div>
     )
 }

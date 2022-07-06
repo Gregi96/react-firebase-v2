@@ -18,17 +18,17 @@ export const Register: React.FunctionComponent = () => {
     const { name, email, error, loading, password } = data
 
     const register = () => {
-        setData({
-            ...data,
+        setData(prev => ({
+            ...prev,
             error: '',
             loading: true
-        })
+        }))
 
         if (!name  || !email || !password) {
-            return setData({
-                ...data,
+            return setData(prev => ({
+                ...prev,
                 error: 'All fields are required'
-            })
+            }))
         }
 
         createUserWithEmailAndPassword(auth, email, password)
@@ -42,22 +42,21 @@ export const Register: React.FunctionComponent = () => {
                     creatAt: Timestamp.fromDate(new Date()),
                     isOnline: true
                 }).then(() => {
-                    setData({
+                    setData(prev => ({
+                        ...prev,
                         name: '',
                         email: '',
                         password: '',
                         error: '',
                         loading: false
-                    })
+                    }))
                     navigation('/')
                 })
             })
-            .catch(error =>
-                setData({
-                    ...data,
-                    error: error.message
-                })
-            )
+            .catch(error => setData({
+                ...data,
+                error: error.message
+            }))
     }
 
     return (
@@ -66,7 +65,9 @@ export const Register: React.FunctionComponent = () => {
                 Log into your Account
             </h3>
             <FieldContainer>
-                <p>Name</p>
+                <p>
+                    Name
+                </p>
                 <input
                     value={name}
                     placeholder="enter name"

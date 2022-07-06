@@ -2,16 +2,14 @@ import React, { Fragment, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useStore } from 'outstated'
-import { useAuthStore as authStore } from '../lib/stores'
+import { useAuthStore as authStore } from 'lib/stores'
 
 export const Navigation = () => {
     const { user,  logOut, isLoading } = useStore(authStore)
     const navigation = useNavigate()
 
-    const signOutFunction = () => {
-        logOut()
-            .then(() => navigation('/login'))
-    }
+    const signOutFunction = () => logOut()
+        .then(() => navigation('/login'))
 
     if (isLoading) {
         return (
@@ -27,7 +25,7 @@ export const Navigation = () => {
                 <button onClick={signOutFunction}>
                     Log out
                 </button>
-            ): (
+            ) : (
                 <Fragment>
                     <BaseLink to="/login">
                         Log in

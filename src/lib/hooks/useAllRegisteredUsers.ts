@@ -7,7 +7,6 @@ export const useAllRegisteredUsers = () => {
     const [users, setUsers] = useState<Array<UserResponseModel>>()
 
     useEffect(() => {
-
         if (!auth.currentUser?.uid) {
             return
         }
@@ -24,7 +23,7 @@ export const useAllRegisteredUsers = () => {
         })
 
         return unsubscribe
-    }, [])
+    }, [auth.currentUser])
 
     return {
         users

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, updateDoc } from 'firebase/firestore'
-import { auth, db } from '../firebase'
+import { auth, db } from 'firebase'
 
 type LoginFields = {
     email: string,
@@ -12,7 +12,7 @@ type LoginFields = {
     loading: boolean
 }
 
-export const Login = () => {
+export const Login: React.FunctionComponent = () => {
     const navigation = useNavigate()
     const [data, setData] = useState<LoginFields>({
         email: '',
@@ -22,18 +22,17 @@ export const Login = () => {
     })
     const { email, error, loading, password } = data
     const logIn = () => {
-
-        setData({
-            ...data,
+        setData(prev => ({
+            ...prev,
             error: '',
             loading: true
-        })
+        }))
 
         if (!email || !password) {
-            return setData({
-                ...data,
+            return setData(prev => ({
+                ...prev,
                 error: 'All fields are required'
-            })
+            }))
         }
 
         signInWithEmailAndPassword(auth, email, password)
@@ -43,22 +42,23 @@ export const Login = () => {
                 updateDoc(doc(db, 'users', user.uid), {
                     isOnline: true
                 }).then(() => {
-                    setData({
+                    setData(prev => ({
+                        ...prev,
                         email: '',
-                        password: '',
                         error: '',
+                        password: '',
                         loading: false
-                    })
+                    }))
                     navigation('/')
                 })
             })
             .catch(error => {
                 const errorMessage = error.message
 
-                setData({
-                    ...data,
+                setData(prev => ({
+                    ...prev,
                     error: errorMessage
-                })
+                }))
             })
     }
 

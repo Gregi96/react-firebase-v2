@@ -3,22 +3,23 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components'
 import { Provider } from 'outstated'
 import { theme } from 'lib/styles'
-import { Home, Login, Navigation, Register, PrivateRoute } from 'components'
 import { useAuthStore as authStore } from 'lib/stores'
+import { Home, Login, Navigation, Register, PrivateRoute } from 'components'
 
 export const App = () => (
     <ThemeProvider theme={theme}>
         <Provider stores={[authStore]}>
             <AppContainer>
                 <BrowserRouter>
-                    <Navigation />
+                    <Navigation/>
                     <Routes>
                         <Route
                             path="/"
                             element={(
                                 <PrivateRoute>
                                     <Home/>
-                                </PrivateRoute>)}
+                                </PrivateRoute>
+                            )}
                         />
                         <Route
                             path="/login"

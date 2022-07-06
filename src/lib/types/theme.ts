@@ -8,6 +8,9 @@ export type AppTheme = {
         input: string,
         red: string,
         green: string,
-        lightBlue: string
+        lightBlue: string,
+        lightGray: string,
+        brown: string,
+        beige: string
     }
 }

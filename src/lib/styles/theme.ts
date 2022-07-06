@@ -10,6 +10,9 @@ export const theme: AppTheme = {
         input: '#484748',
         red: '#ff0000',
         green: '#00FF00',
-        lightBlue: '#f0f8ff'
+        lightBlue: '#f0f8ff',
+        lightGray: '#dcdcdc',
+        brown: '#964B00',
+        beige: '#f5f5dc'
     }
 }

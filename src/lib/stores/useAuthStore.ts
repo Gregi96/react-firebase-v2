@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth'
-import { auth, db } from '../../firebase'
+import { auth, db } from 'firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 
 type useAuthStoreResponse = {
@@ -11,7 +11,7 @@ type useAuthStoreResponse = {
 
 export const useAuthStore = (): useAuthStoreResponse => {
     const [user, setUser] = useState<User | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         setIsLoading(true)
@@ -24,18 +24,16 @@ export const useAuthStore = (): useAuthStoreResponse => {
     const logOut  = () => {
         const auth = getAuth()
 
-        return signOut(auth).then(() => {
-
-            if (user?.uid) {
-                updateDoc(doc(db, 'users', user.uid), {
-                    isOnline: false
-                }).then(() => {
-                    setUser(null)
-                })
-            }
-        }).catch(error => {
+        return signOut(auth)
+            .then(() => {
+                if (user?.uid) {
+                    updateDoc(doc(db, 'users', user.uid), {
+                        isOnline: false
+                    }).then(() => setUser(null))
+                }
+            }).catch(error => {
             // An error happened.
-        })
+            })
     }
 
     return { user, logOut, isLoading }
