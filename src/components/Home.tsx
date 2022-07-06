@@ -7,12 +7,11 @@ import {
     query,
     onSnapshot,
     orderBy
-
 } from 'firebase/firestore'
 import { getUnixTime } from 'date-fns'
+import { db, auth } from 'firebase'
 import { useAllRegisteredUsers } from 'lib/hooks'
 import { MessageResponse, UserResponseModel } from 'lib/types'
-import { db, auth } from 'firebase'
 import { User } from './User'
 import { Message } from './Message'
 import { InputText } from './InputText'
@@ -89,11 +88,10 @@ export const Home: React.FunctionComponent = () => {
                     <MessagesList>
                         {messages && messages.map((message, index) => {
                             const date = message.createdAt.toDate()
-                            const uniqId = `${getUnixTime(date)}-index`
 
                             return (
                                 <Message
-                                    key={uniqId}
+                                    key={`${getUnixTime(date)}`}
                                     message={message}
                                 />
                             )

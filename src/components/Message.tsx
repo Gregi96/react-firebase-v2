@@ -12,9 +12,7 @@ type MessageContainerProps = {
     left: boolean
 }
 
-export const Message: React.FunctionComponent<MessageProps> = ({
-    message
-}) => {
+export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
     const dateToFormat = message.createdAt.toDate()
     const formattedDate = format(dateToFormat, 'yyyy/MM/dd/ hh:mm:ss')
 
