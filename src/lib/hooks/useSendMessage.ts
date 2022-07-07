@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { addDoc, collection, Timestamp } from 'firebase/firestore'
 import { db } from 'firebase'
 import { FirebaseCollectionEnum } from 'lib/types'
+import { createCommonUid } from 'lib/utils'
 
 type SendMessageProps = {
     message: string,
@@ -16,9 +17,7 @@ export const useSendMessage = () => {
     const sendMessage = (params: SendMessageProps) => {
         setIsLoading(true)
 
-        const id = params.firstUserUid > params.secondUserUid ?
-            `${params.firstUserUid + params.secondUserUid}` :
-            `${params.secondUserUid + params.firstUserUid}`
+        const id = createCommonUid(params.firstUserUid, params.secondUserUid)
 
         return addDoc(collection(db, FirebaseCollectionEnum.Messages, id, FirebaseCollectionEnum.Chat), {
             from: params.firstUserUid,

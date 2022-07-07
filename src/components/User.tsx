@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { UserResponseModel } from 'lib/types'
 import { Icons } from 'assets'
+import { UserResponseModel } from 'lib/types'
 
 type UserStatusProps = {
     isActive: boolean

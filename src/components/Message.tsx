@@ -1,8 +1,8 @@
 import React from 'react'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { MessageResponse } from 'lib/types'
 import { auth } from 'firebase'
+import { MessageResponse } from 'lib/types'
 
 type MessageProps = {
     message: MessageResponse

@@ -6,9 +6,11 @@ import { auth } from 'firebase'
 import { theme } from 'lib/styles'
 import { useAuthStore as authStore } from 'lib/stores'
 import { renderRoutes } from 'lib/routing'
+import { useActiveUserStatus } from 'lib/hooks'
 
 export const App = () => {
     const { setUser, setIsAuthorized  } = useStore(authStore)
+    useActiveUserStatus()
 
     useEffect(() => {
         onAuthStateChanged(auth, user => {

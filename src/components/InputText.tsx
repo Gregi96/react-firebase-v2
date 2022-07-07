@@ -33,6 +33,9 @@ export const InputText: React.FunctionComponent<InputTextProps> = ({
 const InputContainer = styled.div`
     width: 100%;
     display: flex;
+    position: sticky;
+    bottom: 0;
+    left: 0;
 `
 
 const Input = styled.input`

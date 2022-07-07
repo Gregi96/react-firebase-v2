@@ -1,6 +1,7 @@
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from 'firebase'
 import { FirebaseCollectionEnum, MessageResponse } from 'lib/types'
+import { createCommonUid } from 'lib/utils'
 
 type getMessagesProps = {
     firstUserUid: string,
@@ -9,9 +10,7 @@ type getMessagesProps = {
 
 export const useUserMessages = (onSuccess: (messages: Array<MessageResponse>) => void) => {
     const getMessages = (params: getMessagesProps) => {
-        const id = params.firstUserUid > params.secondUserUid ?
-            `${params.firstUserUid + params.secondUserUid}` :
-            `${params.secondUserUid + params.firstUserUid}`
+        const id = createCommonUid(params.firstUserUid, params.secondUserUid)
         const messageRef = collection(db, FirebaseCollectionEnum.Messages, id, FirebaseCollectionEnum.Chat)
         const queryMessage = query(messageRef, orderBy('createdAt', 'asc'))
 

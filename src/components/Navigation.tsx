@@ -38,6 +38,7 @@ const NavigationContainer = styled.div`
     justify-content: flex-end;
     padding: 20px 30px;
     border-bottom: 1px solid #d2d1d1;
+    height: 60px;
 `
 
 const BaseLink = styled(Link)`
