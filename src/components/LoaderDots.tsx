@@ -1,11 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export const LoaderDots: React.FunctionComponent = () => (
-    <DotFlashing />
-)
-
-const DotFlashing = styled.div`
+export const LoaderDots = styled.div`
     position: relative;
     width: 10px;
     height: 10px;

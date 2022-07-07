@@ -10,8 +10,8 @@ import { useActiveUserStatus } from 'lib/hooks'
 
 export const App = () => {
     const { setUser, setIsAuthorized  } = useStore(authStore)
-    useActiveUserStatus()
 
+    useActiveUserStatus()
     useEffect(() => {
         onAuthStateChanged(auth, user => {
             setUser(user)
