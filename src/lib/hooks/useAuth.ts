@@ -1,8 +1,8 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { auth, db } from 'firebase'
-import { doc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { doc, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
+import { auth, db } from 'firebase'
 import { FirebaseCollectionEnum } from 'lib/types'
 
 type SignInProps = {
@@ -38,9 +38,7 @@ export const useAuth = () => {
                         setIsLoading(false)
                         navigation('/')
                     })
-                    .catch(() => {
-                        setHasError(true)
-                    })
+                    .catch(() => setHasError(true))
             })
             .catch(error => {
                 setIsLoading(false)
@@ -57,12 +55,8 @@ export const useAuth = () => {
                 updateDoc(doc(db, FirebaseCollectionEnum.User, user.uid), {
                     isOnline: true
                 })
-                    .then(() => {
-                        navigation('/')
-                    })
-                    .catch(() => {
-                        setHasError(true)
-                    })
+                    .then(() => navigation('/'))
+                    .catch(() => setHasError(true))
             })
             .catch(error => {
                 setIsLoading(false)
@@ -70,21 +64,17 @@ export const useAuth = () => {
             })
     }
 
-    const logOut = () => {
-        signOut(auth)
-            .then(() => {
-                if (auth.currentUser?.uid) {
-                    updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser.uid), {
-                        isOnline: false
-                    })
-                        .then(() => navigation('/login'))
-                }
-
-            })
-            .catch(() => {
-                setHasError(true)
-            })
-    }
+    const logOut = () => signOut(auth)
+        .then(() => {
+            if (auth.currentUser?.uid) {
+                updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser.uid), {
+                    isOnline: false
+                })
+                    .then(() => navigation('/login'))
+                    .catch(() => setHasError(true))
+            }
+        })
+        .catch(() => setHasError(true))
 
     return {
         signUp,

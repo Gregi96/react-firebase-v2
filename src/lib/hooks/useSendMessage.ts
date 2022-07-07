@@ -15,6 +15,7 @@ export const useSendMessage = () => {
 
     const sendMessage = (params: SendMessageProps) => {
         setIsLoading(true)
+
         const id = params.firstUserUid > params.secondUserUid ?
             `${params.firstUserUid + params.secondUserUid}` :
             `${params.secondUserUid + params.firstUserUid}`
@@ -25,12 +26,10 @@ export const useSendMessage = () => {
             createdAt: Timestamp.fromDate(new Date()),
             message: params.message
         })
-            .then(() => {
-                setIsLoading(false)
-            })
-            .catch(() => {
+            .then(() => setIsLoading(false))
+            .catch(error => {
                 setHasError(true)
-                throw new Error()
+                throw error
             })
     }
 

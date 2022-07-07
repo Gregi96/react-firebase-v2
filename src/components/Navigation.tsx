@@ -13,7 +13,7 @@ export const Navigation = () => {
         <NavigationContainer>
             {user ? (
                 <button
-                    onClick={() => logOut()}
+                    onClick={logOut}
                     disabled={isLoading}
                 >
                     {isLoading ? 'Is loging out' : 'log out'}

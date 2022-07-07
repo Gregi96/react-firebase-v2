@@ -45,7 +45,7 @@ export const Register: React.FunctionComponent = () => {
                     onChange={event => setPassword(event.target.value)}
                 />
             </FieldContainer>
-            {hasError  && (
+            {hasError && (
                 <ErrorMessage>
                     Something went wrong
                 </ErrorMessage>
