@@ -2,14 +2,14 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from 'firebase'
 import { FirebaseCollectionEnum, MessageResponse } from 'lib/types'
 
-type useUserMessagesProps = {
+type getMessagesProps = {
     firstUserUid: string,
     secondUserUid: string
 }
 
 export const useUserMessages = (onSuccess: (messages: Array<MessageResponse>) => void) => {
 
-    const getMessages = (params: useUserMessagesProps) => {
+    const getMessages = (params: getMessagesProps) => {
         const id = params.firstUserUid > params.secondUserUid ?
             `${params.firstUserUid + params.secondUserUid}` :
             `${params.secondUserUid + params.firstUserUid}`

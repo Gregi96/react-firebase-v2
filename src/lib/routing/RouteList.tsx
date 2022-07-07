@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Home, Login, Navigation, PrivateRoute, Register } from '../../components'
+import { Home, Login, Navigation, PrivateRoute, Register } from 'components'
 import React from 'react'
 
 export const renderRoutes = () => (
