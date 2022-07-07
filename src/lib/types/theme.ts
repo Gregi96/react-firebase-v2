@@ -5,6 +5,12 @@ export type AppTheme = {
         foreground: string,
         error: string,
         typography: string,
-        input: string
+        input: string,
+        red: string,
+        green: string,
+        lightBlue: string,
+        lightGray: string,
+        brown: string,
+        beige: string
     }
 }

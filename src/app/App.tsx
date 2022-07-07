@@ -1,19 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
+import { useStore } from 'outstated'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from 'firebase'
 import { theme } from 'lib/styles'
-import { TranslatorScreen } from 'features/translator'
+import { useAuthStore as authStore } from 'lib/stores'
+import { renderRoutes } from 'lib/routing'
 
-export const App = () => (
-    <ThemeProvider theme={theme}>
-        <AppContainer>
-            Hello World !!
-            <TranslatorScreen />
-        </AppContainer>
-    </ThemeProvider>
-)
+export const App = () => {
+    const { setUser, setIsAuthorized  } = useStore(authStore)
+
+    useEffect(() => {
+        onAuthStateChanged(auth, user => {
+            setUser(user)
+            setIsAuthorized(true)
+        })
+    }, [])
+
+    return (
+        <ThemeProvider theme={theme}>
+            <AppContainer>
+                {renderRoutes()}
+            </AppContainer>
+        </ThemeProvider>
+    )
+}
 
 const AppContainer = styled.div`
     width: 100%;
     height: 100vh;
-    background-color: ${({theme}) => theme.colors.backgroundColor};
+    display: flex;
+    flex-direction: column;
 `
