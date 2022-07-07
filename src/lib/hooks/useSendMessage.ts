@@ -25,8 +25,13 @@ export const useSendMessage = () => {
             createdAt: Timestamp.fromDate(new Date()),
             message: params.message
         })
-            .then(() => setIsLoading(false))
-            .catch(() => setHasError(true))
+            .then(() => {
+                setIsLoading(false)
+            })
+            .catch(() => {
+                setHasError(true)
+                throw new Error()
+            })
     }
 
     return {

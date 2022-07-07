@@ -23,7 +23,8 @@ export const Home: React.FunctionComponent = () => {
                 firstUserUid: auth.currentUser.uid,
                 secondUserUid: selectedUser.uid
             })
-                .then(() => setMessageText(''))
+                .catch(() => console.log('Error in send message'))
+                .finally(() => setMessageText(''))
         }
     }
 
@@ -41,7 +42,7 @@ export const Home: React.FunctionComponent = () => {
     return (
         <HomeContainer>
             <UserAccountContainer>
-                {users && users.map(user => (
+                {users?.map(user => (
                     <User
                         key={user.uid}
                         user={user}

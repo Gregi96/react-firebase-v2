@@ -47,7 +47,7 @@ export const Register: React.FunctionComponent = () => {
             </FieldContainer>
             {hasError  && (
                 <ErrorMessage>
-                    Ups cos poszlo nie tak
+                    Something went wrong
                 </ErrorMessage>
             )}
             <button

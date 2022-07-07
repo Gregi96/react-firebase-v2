@@ -33,10 +33,14 @@ export const useAuth = () => {
                     email: params.email,
                     creatAt: Timestamp.fromDate(new Date()),
                     isOnline: true
-                }).then(() => {
-                    setIsLoading(false)
-                    navigation('/')
                 })
+                    .then(() => {
+                        setIsLoading(false)
+                        navigation('/')
+                    })
+                    .catch(() => {
+                        setHasError(true)
+                    })
             })
             .catch(error => {
                 setIsLoading(false)
@@ -55,6 +59,9 @@ export const useAuth = () => {
                 })
                     .then(() => {
                         navigation('/')
+                    })
+                    .catch(() => {
+                        setHasError(true)
                     })
             })
             .catch(error => {

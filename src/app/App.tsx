@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { useStore } from 'outstated'
+import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from 'firebase'
 import { theme } from 'lib/styles'
 import { useAuthStore as authStore } from 'lib/stores'
 import { renderRoutes } from 'lib/routing'
-import { onAuthStateChanged } from 'firebase/auth'
 
 export const App = () => {
-    const { setUser, setIsLoading } = useStore(authStore)
+    const { setUser, setIsAuthorized  } = useStore(authStore)
 
     useEffect(() => {
         onAuthStateChanged(auth, user => {
             setUser(user)
-            setIsLoading(false)
+            setIsAuthorized(true)
         })
     }, [])
 

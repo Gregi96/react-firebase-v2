@@ -4,19 +4,19 @@ import { SetState } from 'lib/types'
 
 type useAuthStoreResponse = {
     user: User | null,
-    isLoading: boolean,
+    isAuthorized: boolean,
     setUser: SetState<User | null>,
-    setIsLoading: SetState<boolean>
+    setIsAuthorized: SetState<boolean>
 }
 
 export const useAuthStore = (): useAuthStoreResponse => {
     const [user, setUser] = useState<User | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isAuthorized, setIsAuthorized] = useState(false)
 
     return {
         user,
-        isLoading,
         setUser,
-        setIsLoading
+        isAuthorized,
+        setIsAuthorized
     }
 }

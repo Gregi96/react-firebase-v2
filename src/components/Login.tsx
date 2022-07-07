@@ -36,7 +36,7 @@ export const Login: React.FunctionComponent = () => {
             </FieldContainer>
             {hasError && (
                 <ErrorMessage>
-                    Ups cos poszlo nie tak
+                    Something went wrong
                 </ErrorMessage>
             )}
             <button

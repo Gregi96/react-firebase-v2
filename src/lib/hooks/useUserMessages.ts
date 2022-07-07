@@ -8,15 +8,14 @@ type getMessagesProps = {
 }
 
 export const useUserMessages = (onSuccess: (messages: Array<MessageResponse>) => void) => {
-
     const getMessages = (params: getMessagesProps) => {
         const id = params.firstUserUid > params.secondUserUid ?
             `${params.firstUserUid + params.secondUserUid}` :
             `${params.secondUserUid + params.firstUserUid}`
         const messageRef = collection(db, FirebaseCollectionEnum.Messages, id, FirebaseCollectionEnum.Chat)
-        const q = query(messageRef, orderBy('createdAt', 'asc'))
+        const queryMessage = query(messageRef, orderBy('createdAt', 'asc'))
 
-        onSnapshot(q, snapshot => {
+        onSnapshot(queryMessage, snapshot => {
             const messages = snapshot.docs.map(doc => doc.data()) as Array<MessageResponse>
 
             onSuccess(messages)

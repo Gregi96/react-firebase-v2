@@ -8,9 +8,9 @@ type PrivateRouteProps = {
 }
 
 export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ children }) => {
-    const { user, isLoading } = useStore(authStore)
+    const { user, isAuthorized } = useStore(authStore)
 
-    if (!isLoading && !user) {
+    if (isAuthorized && !user) {
         return (
             <Navigate
                 to="/login"
@@ -19,7 +19,7 @@ export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ child
         )
     }
 
-    if (!isLoading && user) {
+    if (isAuthorized && user) {
         return (
             <Fragment>
                 {children}
