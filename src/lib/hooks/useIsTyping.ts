@@ -20,6 +20,7 @@ export const useIsTyping = () => {
             to: params.secondUser,
             isTyping: true
         })
+            .catch(() => 'Something went wrong with typing')
     }
 
     const setStopTypingMode = (params: SetStartTypingModeProps) => {
@@ -28,6 +29,7 @@ export const useIsTyping = () => {
         updateDoc(doc(db, FirebaseCollectionEnum.IsTyping, id), {
             isTyping: false
         })
+            .catch(() => 'Something went wrong with typing')
     }
 
     const getSecondUserTypingMode = (params: SetStartTypingModeProps) => {
