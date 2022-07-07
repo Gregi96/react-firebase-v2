@@ -72,7 +72,6 @@ export const useAuth = () => {
         updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser!.uid), {
             isOnline: false
         })
-            .then()
             .catch(() => console.log('error'))
 
         signOut(auth)

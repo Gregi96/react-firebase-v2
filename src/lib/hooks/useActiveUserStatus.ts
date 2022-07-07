@@ -10,7 +10,6 @@ export const useActiveUserStatus = () => {
                 return updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser.uid), {
                     isOnline: true
                 })
-                    .then()
                     .catch(() => console.warn('Something went wrong with change user activity'))
             }
 
@@ -18,7 +17,6 @@ export const useActiveUserStatus = () => {
                 updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser!.uid), {
                     isOnline: false
                 })
-                    .then()
                     .catch(() => console.warn('Something went wrong with change user activity'))
             }
         })
