@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { getUnixTime } from 'date-fns'
 import { auth } from 'firebase'
-import { useAllRegisteredUsers, useIsTyping, useSendMessage, useUserMessages } from 'lib/hooks'
+import { useAllRegisteredUsers, useIsTyping, useSendMessage, useUserMessages, useScrollDownMessage } from 'lib/hooks'
 import { Media, MessageResponse, UserResponseModel } from 'lib/types'
 import { User } from './User'
 import { Message } from './Message'
@@ -20,6 +20,7 @@ export const Home: React.FunctionComponent = () => {
     const isFirstRender = useRef(true)
     const messagesEndRef = useRef<null | HTMLDivElement>(null)
     const [generalChannel, setGeneralChannel] = useState(true)
+    useScrollDownMessage({messages, receiverIsTyping, messagesEndRef})
 
     const sendMessage = () => {
         if (messageText && auth.currentUser?.uid && selectedUser?.uid) {
@@ -90,12 +91,6 @@ export const Home: React.FunctionComponent = () => {
     useEffect(() => {
         isFirstRender.current = false
     }, [])
-
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-        }
-    }, [messages, receiverIsTyping])
 
     return (
         <HomeContainer>
