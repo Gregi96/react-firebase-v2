@@ -10,6 +10,12 @@ type SendMessageProps = {
     secondUserUid: string
 }
 
+type SendGeneralMessage = {
+    message: string,
+    userUid: string,
+    name: string
+}
+
 export const useSendMessage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [hasError, setHasError] = useState(false)
@@ -32,9 +38,22 @@ export const useSendMessage = () => {
             })
     }
 
+    const sendGeneralMessage = (params: SendGeneralMessage) => addDoc(collection(db, FirebaseCollectionEnum.generalMessages), {
+        userUid: params.userUid,
+        createdAt: Timestamp.fromDate(new Date()),
+        message: params.message,
+        name: params.name
+    })
+        .then(() => setIsLoading(false))
+        .catch(error => {
+            setHasError(true)
+            throw error
+        })
+
     return {
         sendMessage,
         isLoading,
-        hasError
+        hasError,
+        sendGeneralMessage
     }
 }

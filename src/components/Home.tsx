@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { getUnixTime } from 'date-fns'
 import { auth } from 'firebase'
 import { useAllRegisteredUsers, useIsTyping, useSendMessage, useUserMessages } from 'lib/hooks'
-import { MessageResponse, UserResponseModel } from 'lib/types'
+import { Media, MessageResponse, UserResponseModel } from 'lib/types'
 import { User } from './User'
 import { Message } from './Message'
 import { InputText } from './InputText'
@@ -14,11 +14,12 @@ export const Home: React.FunctionComponent = () => {
     const [selectedUser, setSelectedUser] = useState<UserResponseModel>()
     const [messageText, setMessageText] = useState('')
     const [messages, setMessages] = useState<Array<MessageResponse>>([])
-    const { sendMessage: sendMessageAction, isLoading } = useSendMessage()
-    const { getMessages } = useUserMessages(setMessages)
+    const { sendMessage: sendMessageAction, isLoading, sendGeneralMessage: sendGeneralMessageAction } = useSendMessage()
+    const { getMessages, getGeneralMessages } = useUserMessages(setMessages)
     const { setStartTypingMode, setStopTypingMode, getSecondUserTypingMode, receiverIsTyping } = useIsTyping()
     const isFirstRender = useRef(true)
     const messagesEndRef = useRef<null | HTMLDivElement>(null)
+    const [generalChannel, setGeneralChannel] = useState(true)
 
     const sendMessage = () => {
         if (messageText && auth.currentUser?.uid && selectedUser?.uid) {
@@ -32,7 +33,20 @@ export const Home: React.FunctionComponent = () => {
         }
     }
 
+    const sendGeneralMessage = () => {
+        if (messageText && auth.currentUser?.uid && auth.currentUser.email) {
+            sendGeneralMessageAction({
+                message: messageText,
+                userUid: auth.currentUser.uid,
+                name: auth.currentUser.email
+            })
+                .catch(() => console.log('Error in send message'))
+                .finally(() => setMessageText(''))
+        }
+    }
+
     const onSelectedUser = (user: UserResponseModel) => {
+        setGeneralChannel(false)
         setSelectedUser(user)
 
         if (auth.currentUser?.uid && user.uid) {
@@ -46,6 +60,12 @@ export const Home: React.FunctionComponent = () => {
             })
         }
     }
+
+    useEffect(() => {
+        if (!selectedUser) {
+            getGeneralMessages()
+        }
+    }, [generalChannel])
 
     useEffect(() => {
         if (!isFirstRender.current && auth.currentUser?.uid && selectedUser?.uid) {
@@ -75,11 +95,21 @@ export const Home: React.FunctionComponent = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
         }
-    }, [messages])
+    }, [messages, receiverIsTyping])
 
     return (
         <HomeContainer>
             <UserAccountContainer>
+                <div>
+                    <GeneralChannel
+                        onClick={() => {
+                            setGeneralChannel(true)
+                            setSelectedUser(undefined)
+                        }}
+                    >
+                        General Message
+                    </GeneralChannel>
+                </div>
                 {users?.map(user => (
                     <User
                         key={user.uid}
@@ -97,7 +127,7 @@ export const Home: React.FunctionComponent = () => {
                             </h1>
                         ) : (
                             <h1>
-                                Select user to start typing
+                                It's General channel, you can choose user to private message
                             </h1>
                         )}
                     </Heading>
@@ -109,6 +139,7 @@ export const Home: React.FunctionComponent = () => {
                                 <Message
                                     key={`${getUnixTime(date)}`}
                                     message={message}
+                                    isGeneralChannel={generalChannel}
                                 />
                             )
                         })}
@@ -120,14 +151,18 @@ export const Home: React.FunctionComponent = () => {
                         <div ref={messagesEndRef}/>
                     </MessagesList>
                 </div>
-                {selectedUser && (
-                    <InputText
-                        isLoading={isLoading}
-                        value={messageText}
-                        onChange={setMessageText}
-                        onClick={sendMessage}
-                    />
-                )}
+                <InputText
+                    value={messageText}
+                    onClick={() => {
+                        if (generalChannel) {
+                            return sendGeneralMessage()
+                        }
+
+                        sendMessage()
+                    }}
+                    isLoading={isLoading}
+                    onChange={setMessageText}
+                />
             </MessagesContainer>
         </HomeContainer>
     )
@@ -138,10 +173,24 @@ const HomeContainer = styled.div`
     display: flex;
 `
 
+const GeneralChannel = styled.div`
+    margin-bottom: 10px;
+    text-align: center;
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.colors.darkBlue};
+    color: ${({ theme }) => theme.colors.white};
+    font-weight: 500;
+    padding: 15px 5px;
+    border-radius: 5px;
+`
+
 const UserAccountContainer = styled.div`
     width: 20%;
     padding: 20px 15px;
     background-color: ${({ theme }) => theme.colors.lightGray};
+    @media (max-width: ${Media.Phone}px) {
+        width: 30%;
+    }
 `
 
 const MessagesContainer = styled.div`
@@ -161,14 +210,17 @@ const MessagesList = styled.div`
 const Heading = styled.div`
     position: sticky;
     top: 0;
-    font-size: 20px;
     text-align: center;
     color: ${({ theme }) => theme.colors.brown};
     margin-bottom: 20px;
+    h1 {
+        font-size: 20px;
+    }
 `
 
 const LoaderContainer = styled.div`
+    width: 50px;
+    height: 50px;
     margin-top: 20px;
     margin-left: 20px;
-    height: 50px;
 `

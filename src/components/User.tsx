@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Icons } from 'assets'
-import { UserResponseModel } from 'lib/types'
+import { Media, UserResponseModel } from 'lib/types'
 
 type UserStatusProps = {
     isActive: boolean
@@ -43,6 +43,10 @@ const UserCard = styled.div`
     &:hover {
       filter: brightness(95%);
     }
+    @media (max-width: ${Media.Phone}px) {
+        flex-direction: column;
+        padding: 10px;
+}
 `
 
 const AvatarContainer = styled.div`

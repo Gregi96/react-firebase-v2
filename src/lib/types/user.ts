@@ -12,5 +12,6 @@ export type MessageResponse = {
     from: string,
     to: string,
     message: string,
-    createdAt: Timestamp
+    createdAt: Timestamp,
+    name?: string
 }

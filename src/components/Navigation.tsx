@@ -12,12 +12,12 @@ export const Navigation = () => {
     return (
         <NavigationContainer>
             {user ? (
-                <button
+                <LogOutButton
                     onClick={logOut}
                     disabled={isLoading}
                 >
                     {isLoading ? 'Is loging out' : 'log out'}
-                </button>
+                </LogOutButton>
             ) : (
                 <Fragment>
                     <BaseLink to="/login">
@@ -36,9 +36,10 @@ const NavigationContainer = styled.div`
     background-color: ${({ theme }) => theme.colors.backgroundColor};
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     padding: 20px 30px;
     border-bottom: 1px solid #d2d1d1;
-    height: 60px;
+    height: 80px;
 `
 
 const BaseLink = styled(Link)`
@@ -48,4 +49,12 @@ const BaseLink = styled(Link)`
     &:hover {
       color: black;
     }
+`
+
+const LogOutButton = styled.button`
+    padding: 5px 15px;
+    border: none;
+    background-color: ${({ theme }) => theme.colors.blueviolet};
+    color: white;
+    border-radius: 5px;
 `

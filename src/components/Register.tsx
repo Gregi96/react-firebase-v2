@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useAuth } from 'lib/hooks'
+import { FieldContainer, FormContainer, SubmitButton, ErrorMessage } from 'lib/styles'
 
 export const Register: React.FunctionComponent = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
+    const [nameError, setNameError] = useState('')
     const { signUp, isLoading, hasError } = useAuth()
 
     return (
         <FormContainer>
-            <h3>
-                Log into your Account
-            </h3>
+            <Heading>
+                Create An Account
+            </Heading>
             <FieldContainer>
                 <p>
                     Name
@@ -22,6 +24,11 @@ export const Register: React.FunctionComponent = () => {
                     placeholder="enter name"
                     onChange={event => setName(event.target.value)}
                 />
+                {nameError && (
+                    <ErrorMessage>
+                        {nameError}
+                    </ErrorMessage>
+                )}
             </FieldContainer>
             <FieldContainer>
                 <p>
@@ -50,38 +57,28 @@ export const Register: React.FunctionComponent = () => {
                     Something went wrong
                 </ErrorMessage>
             )}
-            <button
-                onClick={() => signUp({
-                    name,
-                    email,
-                    password
-                })}
+            <SubmitButton
+                onClick={() => {
+                    if (name.length < 5) {
+                        return setNameError(`Name can't be smaller then 5 characters`)
+                    }
+
+                    setNameError('')
+                    signUp({
+                        name,
+                        email,
+                        password
+                    })
+                }}
                 disabled={isLoading}
             >
                 {isLoading ? 'Registering ...' : 'Register'}
-            </button>
+            </SubmitButton>
         </FormContainer>
     )
 }
 
-const FormContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-`
-
-const FieldContainer = styled.label`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    p {
-      margin-bottom: 5px;
-    }
-`
-
-const ErrorMessage = styled.p`
-    color: red;
-    margin-bottom: 10px;
+const Heading = styled.div`
+    margin-bottom: 20px;
+    font-size: 20px;
 `

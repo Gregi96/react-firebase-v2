@@ -21,7 +21,19 @@ export const useUserMessages = (onSuccess: (messages: Array<MessageResponse>) =>
         })
     }
 
+    const getGeneralMessages = () => {
+        const messageRef = collection(db, 'generalMessages')
+        const queryMessage = query(messageRef, orderBy('createdAt', 'asc'))
+
+        onSnapshot(queryMessage, snapshot => {
+            const messages = snapshot.docs.map(doc => doc.data()) as Array<MessageResponse>
+
+            onSuccess(messages)
+        })
+    }
+
     return {
-        getMessages
+        getMessages,
+        getGeneralMessages
     }
 }
