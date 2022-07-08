@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { getUnixTime } from 'date-fns'
 import { auth } from 'firebase'
-import { useAllRegisteredUsers, useIsTyping, useSendMessage, useUserMessages, useScrollDownMessage } from 'lib/hooks'
-import { Media, MessageResponse, UserResponseModel } from 'lib/types'
+import {
+    useAllRegisteredUsers,
+    useSendMessage,
+    useChatRoomActions,
+    useScrollIntoDivElement
+} from 'lib/hooks'
+import { Media } from 'lib/types'
 import { User } from './User'
 import { Message } from './Message'
 import { InputText } from './InputText'
@@ -11,16 +16,21 @@ import { LoaderDots } from './LoaderDots'
 
 export const Home: React.FunctionComponent = () => {
     const { users } = useAllRegisteredUsers()
-    const [selectedUser, setSelectedUser] = useState<UserResponseModel>()
-    const [messageText, setMessageText] = useState('')
-    const [messages, setMessages] = useState<Array<MessageResponse>>([])
     const { sendMessage: sendMessageAction, isLoading, sendGeneralMessage: sendGeneralMessageAction } = useSendMessage()
-    const { getMessages, getGeneralMessages } = useUserMessages(setMessages)
-    const { setStartTypingMode, setStopTypingMode, getSecondUserTypingMode, receiverIsTyping } = useIsTyping()
-    const isFirstRender = useRef(true)
-    const messagesEndRef = useRef<null | HTMLDivElement>(null)
-    const [generalChannel, setGeneralChannel] = useState(true)
-    useScrollDownMessage({messages, receiverIsTyping, messagesEndRef})
+    const {
+        setGeneralChannel ,
+        setPrivateChannel,
+        isGeneralChannel,
+        selectedUser,
+        messages,
+        receiverIsTyping,
+        messageText,
+        setMessageText
+    } = useChatRoomActions()
+    const scrollRef = useScrollIntoDivElement(
+        messages,
+        receiverIsTyping
+    )
 
     const sendMessage = () => {
         if (messageText && auth.currentUser?.uid && selectedUser?.uid) {
@@ -46,62 +56,11 @@ export const Home: React.FunctionComponent = () => {
         }
     }
 
-    const onSelectedUser = (user: UserResponseModel) => {
-        setGeneralChannel(false)
-        setSelectedUser(user)
-
-        if (auth.currentUser?.uid && user.uid) {
-            getMessages({
-                firstUserUid: auth.currentUser.uid,
-                secondUserUid: user.uid
-            })
-            getSecondUserTypingMode({
-                firstUser: auth.currentUser.uid,
-                secondUser: user.uid
-            })
-        }
-    }
-
-    useEffect(() => {
-        if (!selectedUser) {
-            getGeneralMessages()
-        }
-    }, [generalChannel])
-
-    useEffect(() => {
-        if (!isFirstRender.current && auth.currentUser?.uid && selectedUser?.uid) {
-            setStartTypingMode({
-                firstUser: auth.currentUser.uid,
-                secondUser: selectedUser.uid
-            })
-        }
-
-        const stopTyping = setTimeout(() => {
-            if (auth.currentUser?.uid && selectedUser?.uid) {
-                setStopTypingMode({
-                    firstUser: auth.currentUser.uid,
-                    secondUser: selectedUser.uid
-                })
-            }
-        }, 800)
-
-        return () => clearTimeout(stopTyping)
-    }, [messageText])
-
-    useEffect(() => {
-        isFirstRender.current = false
-    }, [])
-
     return (
         <HomeContainer>
             <UserAccountContainer>
                 <div>
-                    <GeneralChannel
-                        onClick={() => {
-                            setGeneralChannel(true)
-                            setSelectedUser(undefined)
-                        }}
-                    >
+                    <GeneralChannel onClick={setGeneralChannel}>
                         General Message
                     </GeneralChannel>
                 </div>
@@ -109,7 +68,7 @@ export const Home: React.FunctionComponent = () => {
                     <User
                         key={user.uid}
                         user={user}
-                        onClick={onSelectedUser}
+                        onClick={setPrivateChannel}
                     />
                 ))}
             </UserAccountContainer>
@@ -134,7 +93,7 @@ export const Home: React.FunctionComponent = () => {
                                 <Message
                                     key={`${getUnixTime(date)}`}
                                     message={message}
-                                    isGeneralChannel={generalChannel}
+                                    isGeneralChannel={isGeneralChannel}
                                 />
                             )
                         })}
@@ -143,13 +102,13 @@ export const Home: React.FunctionComponent = () => {
                                 <LoaderDots/>
                             </LoaderContainer>
                         )}
-                        <div ref={messagesEndRef}/>
+                        <div ref={scrollRef}/>
                     </MessagesList>
                 </div>
                 <InputText
                     value={messageText}
                     onClick={() => {
-                        if (generalChannel) {
+                        if (isGeneralChannel) {
                             return sendGeneralMessage()
                         }
 
