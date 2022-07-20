@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useAuth } from 'lib/hooks'
+import { FieldContainer, FormContainer, SubmitButton, ErrorMessage } from 'lib/styles'
 
 export const Login: React.FunctionComponent = () => {
     const [email, setEmail] = useState('')
@@ -9,9 +10,9 @@ export const Login: React.FunctionComponent = () => {
 
     return (
         <FormContainer>
-            <h3>
-                Create An Account
-            </h3>
+            <Heading>
+                Log into your Account
+            </Heading>
             <FieldContainer>
                 <p>
                     E-mail
@@ -39,7 +40,7 @@ export const Login: React.FunctionComponent = () => {
                     Something went wrong
                 </ErrorMessage>
             )}
-            <button
+            <SubmitButton
                 onClick={() => logIn({
                     email,
                     password
@@ -47,29 +48,12 @@ export const Login: React.FunctionComponent = () => {
                 disabled={isLoading}
             >
                 {isLoading ? 'Logging ...' : 'Log in'}
-            </button>
+            </SubmitButton>
         </FormContainer>
     )
 }
 
-const FormContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-`
-
-const FieldContainer = styled.label`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    p {
-      margin-bottom: 5px;
-    }
-`
-
-const ErrorMessage = styled.p`
-    color: red;
-    margin-bottom: 10px;
+const Heading = styled.div`
+    margin-bottom: 20px;
+    font-size: 20px;
 `

@@ -64,17 +64,20 @@ export const useAuth = () => {
             })
     }
 
-    const logOut = () => signOut(auth)
-        .then(() => {
-            if (auth.currentUser?.uid) {
-                updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser.uid), {
-                    isOnline: false
-                })
-                    .then(() => navigation('/login'))
-                    .catch(() => setHasError(true))
-            }
+    const logOut = () => {
+        if (!auth.currentUser?.uid) {
+            return
+        }
+
+        updateDoc(doc(db, FirebaseCollectionEnum.User, auth.currentUser!.uid), {
+            isOnline: false
         })
-        .catch(() => setHasError(true))
+            .catch(() => console.log('error'))
+
+        signOut(auth)
+            .then(() => navigation('/login'))
+            .catch(() => setHasError(true))
+    }
 
     return {
         signUp,

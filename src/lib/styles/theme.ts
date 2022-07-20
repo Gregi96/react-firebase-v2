@@ -13,6 +13,9 @@ export const theme: AppTheme = {
         lightBlue: '#f0f8ff',
         lightGray: '#dcdcdc',
         brown: '#964B00',
-        beige: '#f5f5dc'
+        beige: '#f5f5dc',
+        darkBlue: 'darkblue',
+        white: 'white',
+        blueviolet: 'blueviolet'
     }
 }

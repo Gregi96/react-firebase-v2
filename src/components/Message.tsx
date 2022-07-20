@@ -1,18 +1,22 @@
 import React from 'react'
 import { format } from 'date-fns'
 import styled from 'styled-components'
-import { MessageResponse } from 'lib/types'
 import { auth } from 'firebase'
+import { MessageResponse } from 'lib/types'
 
 type MessageProps = {
-    message: MessageResponse
+    message: MessageResponse,
+    isGeneralChannel: boolean
 }
 
 type MessageContainerProps = {
     sender: boolean
 }
 
-export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
+export const Message: React.FunctionComponent<MessageProps> = ({
+    message ,
+    isGeneralChannel
+}) => {
     const dateToFormat = message.createdAt.toDate()
     const formattedDate = format(dateToFormat, 'yyyy/MM/dd/ hh:mm:ss')
 
@@ -21,6 +25,11 @@ export const Message: React.FunctionComponent<MessageProps> = ({ message }) => {
             <div>
                 {message.message}
             </div>
+            {isGeneralChannel && message.name && (
+                <AuthorEmail>
+                    {message.name}
+                </AuthorEmail>
+            )}
             <Time>
                 {formattedDate}
             </Time>
@@ -43,4 +52,8 @@ const Time = styled.div`
     font-size: 10px;
     text-align: end;
     margin-top: 15px;
+`
+
+const AuthorEmail = styled.div`
+    font-size: 12px;
 `

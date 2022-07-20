@@ -2,11 +2,18 @@ import { useState } from 'react'
 import { addDoc, collection, Timestamp } from 'firebase/firestore'
 import { db } from 'firebase'
 import { FirebaseCollectionEnum } from 'lib/types'
+import { createCommonUid } from 'lib/utils'
 
 type SendMessageProps = {
     message: string,
     firstUserUid: string,
     secondUserUid: string
+}
+
+type SendGeneralMessage = {
+    message: string,
+    userUid: string,
+    name: string
 }
 
 export const useSendMessage = () => {
@@ -16,9 +23,7 @@ export const useSendMessage = () => {
     const sendMessage = (params: SendMessageProps) => {
         setIsLoading(true)
 
-        const id = params.firstUserUid > params.secondUserUid ?
-            `${params.firstUserUid + params.secondUserUid}` :
-            `${params.secondUserUid + params.firstUserUid}`
+        const id = createCommonUid(params.firstUserUid, params.secondUserUid)
 
         return addDoc(collection(db, FirebaseCollectionEnum.Messages, id, FirebaseCollectionEnum.Chat), {
             from: params.firstUserUid,
@@ -33,9 +38,22 @@ export const useSendMessage = () => {
             })
     }
 
+    const sendGeneralMessage = (params: SendGeneralMessage) => addDoc(collection(db, FirebaseCollectionEnum.generalMessages), {
+        userUid: params.userUid,
+        createdAt: Timestamp.fromDate(new Date()),
+        message: params.message,
+        name: params.name
+    })
+        .then(() => setIsLoading(false))
+        .catch(error => {
+            setHasError(true)
+            throw error
+        })
+
     return {
         sendMessage,
         isLoading,
-        hasError
+        hasError,
+        sendGeneralMessage
     }
 }

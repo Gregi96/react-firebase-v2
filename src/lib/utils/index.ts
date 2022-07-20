@@ -1,0 +1,1 @@
+export { createCommonUid } from './createCommonUid'
